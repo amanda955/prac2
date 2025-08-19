@@ -63,7 +63,7 @@ CHIP ALU {
     Mux16(a=yZ, b=yN_tmp, sel=ny, out=yP);
 
     And16(a=xP, b=yP, out=andOut);
-    Add16(a=xP, b=yP, out=addOut, over=false);
+    Add16(a=xP, b=yP, out=addOut, over=dummyCarry);
     Mux16(a=andOut, b=addOut, sel=f, out=fOut);
 
     Not16(in=fOut, out=outN_tmp);
@@ -73,3 +73,4 @@ CHIP ALU {
     Or(a=false, b=false, out=ng);
 
 }
+
