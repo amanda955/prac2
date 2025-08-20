@@ -49,7 +49,7 @@ CHIP ALU {
           b[12]=false, b[13]=false, b[14]=false, b[15]=false,
           sel=zx, out=xZeroed);
     Not16(in=xZeroed, out=xNot);
-    Mux16(a=xZeroed, b=xNot, sel=nx, out=xFinal);
+    Mux16(a=xZeroed, b=xNot, sel=nx, out=xOut);
 
     Mux16(a=y,
           b[0]=false, b[1]=false, b[2]=false, b[3]=false,
@@ -58,22 +58,21 @@ CHIP ALU {
           b[12]=false, b[13]=false, b[14]=false, b[15]=false,
           sel=zy, out=yZeroed);
     Not16(in=yZeroed, out=yNot);
-    Mux16(a=yZeroed, b=yNot, sel=ny, out=yFinal);
+    Mux16(a=yZeroed, b=yNot, sel=ny, out=yOut);
 
-    And16(a=xFinal, b=yFinal, out=andOut);
-    Add16(a=xFinal, b=yFinal, out=addOut, over=dummy);
+    And16(a=xOut, b=yOut, out=andOut);
+    Add16(a=xOut, b=yOut, out=addOut, over=dummy);
     Mux16(a=andOut, b=addOut, sel=f, out=fOut);
 
     Not16(in=fOut, out=outNot);
     Mux16(a=fOut, b=outNot, sel=no, out=out);
 
-    Or16Way(in=out, out=nonZero);
-    Not(in=nonZero, out=zr);
-
-    Or(a=out[15], b=false, out=ng);
-
+    Or16Way(in=out, out=anyBit);
+    Not(in=anyBit, out=zr);   // zr = 1 iff all out bits are 0
+    Or(a=out[15], b=false, out=ng); // ng = MSB of out
 
 }
+
 
 
 
