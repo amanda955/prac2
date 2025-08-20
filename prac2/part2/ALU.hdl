@@ -47,39 +47,34 @@ CHIP ALU {
           b[4]=false, b[5]=false, b[6]=false, b[7]=false,
           b[8]=false, b[9]=false, b[10]=false, b[11]=false,
           b[12]=false, b[13]=false, b[14]=false, b[15]=false,
-          sel=zx, out=xZ);
-    Not16(in=xZ, out=xN);
-    Mux16(a=xZ, b=xN, sel=nx, out=xP);
+          sel=zx, out=xZeroed);
+    Not16(in=xZeroed, out=xNot);
+    Mux16(a=xZeroed, b=xNot, sel=nx, out=xFinal);
 
     Mux16(a=y,
           b[0]=false, b[1]=false, b[2]=false, b[3]=false,
           b[4]=false, b[5]=false, b[6]=false, b[7]=false,
           b[8]=false, b[9]=false, b[10]=false, b[11]=false,
           b[12]=false, b[13]=false, b[14]=false, b[15]=false,
-          sel=zy, out=yZ);
-    Not16(in=yZ, out=yN);
-    Mux16(a=yZ, b=yN, sel=ny, out=yP);
+          sel=zy, out=yZeroed);
+    Not16(in=yZeroed, out=yNot);
+    Mux16(a=yZeroed, b=yNot, sel=ny, out=yFinal);
 
-    And16(a=xP, b=yP, out=andOut);
-    Add16(a=xP, b=yP, out=addOut, over=dummyCarry);
+    And16(a=xFinal, b=yFinal, out=andOut);
+    Add16(a=xFinal, b=yFinal, out=addOut, over=dummy);
     Mux16(a=andOut, b=addOut, sel=f, out=fOut);
 
-    Not16(in=fOut, out=outN);
-    Mux16(a=fOut, b=outN, sel=no, out=out);
+    Not16(in=fOut, out=outNot);
+    Mux16(a=fOut, b=outNot, sel=no, out=out);
 
-    Or8Way(in[0]=out[0], in[1]=out[1], in[2]=out[2], in[3]=out[3],
-           in[4]=out[4], in[5]=out[5], in[6]=out[6], in[7]=out[7], out=anyLow);
-    Or8Way(in[0]=out[8], in[1]=out[9], in[2]=out[10], in[3]=out[11],
-           in[4]=out[12], in[5]=out[13], in[6]=out[14], in[7]=out[15], out=anyHigh);
-    Or(a=anyLow, b=anyHigh, out=anyBit);
-    Not(in=anyBit, out=zr);
+    Or16Way(in=out, out=nonZero);
+    Not(in=nonZero, out=zr);
 
     Or(a=out[15], b=false, out=ng);
 
-    Or(a=false, b=false, out=zr);
-    Or(a=false, b=false, out=ng);
 
 }
+
 
 
 
